@@ -1,0 +1,66 @@
+/* 需要放到文件最上面 */
+@import '@/uni_modules/uni-scss/variables.scss';
+
+/*
+ 以下变量是默认值，如不需要修改可以不用给下面的变量重新赋值
+ */
+// 主色 - 采用深绿色系作为主题色
+$uni-primary: #2E7D32;                      // 主绿色
+$uni-primary-disable: mix(#fff, $uni-primary, 50%);  // 主色禁用态
+$uni-primary-light: mix(#fff, $uni-primary, 80%);    // 主色浅色
+
+// 辅助色 - 重新设计配色方案
+// 成功色 - 使用较亮的绿色表示成功
+$uni-success: #4CAF50;                      // 成功绿色
+$uni-success-disable: mix(#fff, $uni-success, 50%);  // 成功色禁用态
+$uni-success-light: mix(#fff, $uni-success, 80%);    // 成功色浅色
+
+// 警告色 - 使用橙色系表示警告
+$uni-warning: #FF9800;                      // 橙色警告
+$uni-warning-disable: mix(#fff, $uni-warning, 50%);  // 警告色禁用态
+$uni-warning-light: mix(#fff, $uni-warning, 80%);    // 警告色浅色
+
+// 错误色 - 使用红色系表示错误
+$uni-error: #F44336;                        // 错误红色
+$uni-error-disable: mix(#fff, $uni-error, 50%);      // 错误色禁用态
+$uni-error-light: mix(#fff, $uni-error, 80%);        // 错误色浅色
+
+// 信息色 - 使用蓝灰色表示信息
+$uni-info: #607D8B;                         // 蓝灰色信息
+$uni-info-disable: mix(#fff, $uni-info, 50%);        // 信息色禁用态
+$uni-info-light: mix(#fff, $uni-info, 80%);          // 信息色浅色
+
+// 中性色 - 优化文字颜色层次
+// 中性色用于文本、背景和边框颜色。通过运用不同的中性色，来表现层次结构。
+$uni-main-color: #2C2C2C;           // 主要文字 - 深灰色
+$uni-base-color: #555555;           // 常规文字 - 中灰色
+$uni-secondary-color: #757575;      // 次要文字 - 浅灰色
+$uni-extra-color: #BDBDBD;          // 辅助说明 - 更浅灰色
+
+// 边框颜色 - 采用清新的边框色调
+$uni-border-1: #E8F5E8;             // 最浅边框 - 浅绿色调
+$uni-border-2: #E0E0E0;             // 浅边框 - 浅灰色
+$uni-border-3: #CCCCCC;             // 中等边框 - 中灰色
+$uni-border-4: #999999;             // 深边框 - 深灰色
+
+// 常规色
+$uni-black: #000000;                // 纯黑色
+$uni-white: #ffffff;                // 纯白色
+$uni-transparent: rgba(0, 0, 0, 0); // 透明色
+
+// 背景色 - 采用清新的背景色
+$uni-bg-color: #F1F8E9;             // 浅绿色背景
+
+/* 水平间距 */
+$uni-spacing-sm: 16upx;               // 小间距
+$uni-spacing-base: 30upx;            // 基础间距
+$uni-spacing-lg: 60upx;              // 大间距
+
+// 阴影 - 调整阴影颜色使其更协调
+$uni-shadow-sm: 0 0 10upx rgba(46, 125, 50, 0.1);      // 小阴影 - 绿色调
+$uni-shadow-base: 0 2upx 16upx 2upx rgba(46, 125, 50, 0.15);  // 基础阴影 - 绿色调
+$uni-shadow-lg: 0upx 2upx 20upx 4upx rgba(46, 125, 50, 0.2);  // 大阴影 - 绿色调
+
+// 蒙版
+$uni-mask: rgba(46, 125, 50, 0.4);  // 绿色调蒙版
+

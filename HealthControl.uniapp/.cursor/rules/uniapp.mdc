@@ -1,0 +1,67 @@
+---
+alwaysApply: true
+---
+
+## 项目名称
+
+小程序端
+
+## 技术栈
+
+- 前端框架：Vue3（Composition API + `<script setup>`）
+- UI 组件库：uni-ui 官方库
+- 状态管理：Pinia
+- 封装为 `Post` 方法，路径：`@/utils/http`
+- 样式预处理器：SCSS
+
+## 项目结构约定
+
+- `@/assets/`：静态资源（图片、默认头像、错误图等）
+- `@/components/`：通用组件
+- `@/pages/`：页面视图
+- `@/store/`：Pinia 状态管理
+- `@/utils/http`：封装的请求方法（导出 Post PostSigleUpdate 等）
+- `@/manifest.json` uniapp 应用的配置文件
+- `@/pages.json` : 页面的路由
+
+## 样式规范
+- 设计的时候如果没有提示你,请使用简洁、质感的设计，请勿使用模型自带的颜色主题色
+- 所有 `<style>` 标签必须添加 `scoped` 和 `lang="scss"`：
+
+  ```vue
+  <style scoped lang="scss"></style>
+  ```
+
+- 不要使用全局样式污染，除非明确需要。
+- 在使用 display: grid;的时候需要考虑设置 width: 100%;
+- 不要使用渐变的背景
+- 按钮设计不要太大 设计成 mini 类型
+- 以及有顶部导航栏了,请勿在预留顶部空间
+- 不要使用 px,请使用 upx
+
+## Vue 表单对象命名规范
+
+- 在 Vue 3 项目中，表单存储对象请统一使用 `formData` 命名格式，而不是 `form`。
+
+## template 模板中的规范
+
+- 禁止使用这种写法:class="getStatusClass(item.RemindTime) 来绑定样式
+
+## 主要逻辑处理
+
+- 后端接口返回的对象格式都是大写的驼峰命令,请勿使用小写
+- 传值给后端的参数都要求是大写的驼峰命名
+- 接口请求最后是 List 命名的都是分页查询,需要进行结构出 Items,写法可以参考如下
+  const { Data: { Items } } = await Post("/controller/List", { });
+- 在使用 PaginationBox 分页组件的时候,请使用 Reload()方法,写法可以参考如下
+  TopicPaginationBox.value.Reload(where);
+- 在从 pina 中获取到 RoleType 进行判断的时候,RoleType 返回的是具体的描述,写法可以参考如下
+  if (RoleType.value == "管理员")   
+- 在进行状态判断的时候请使用[状态值 1,状态值 1,].includes(状态)的方式进行,写法可以参考如下
+  v-if="[0, 1].includes(orderInfo.PurchasingOrderStatus)"   
+- onLoad 和 onShow 都是通过从@dcloudio/uni-app 进行导入
+- 在使用 uni-easyinput 输入框表单的时候需要这样使用全局颜色 primaryColor="var(--primary-color)"
+## 用户相关资源
+
+- 默认头像导入：
+  import defaultAvatar from "@/assets/默认头像.png";

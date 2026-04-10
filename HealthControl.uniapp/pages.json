@@ -1,0 +1,180 @@
+{
+  "pages": [
+    {
+      "path": "pages/Front/Index"
+    },
+    {
+      "path": "pages/Front/Welcome"
+    },
+    {
+      "path": "pages/Front/ServiceHub"
+    },
+    {
+      "path": "pages/Front/Login"
+    },
+    {
+      "path": "pages/Front/Register"
+    },
+    {
+      "path": "pages/Front/ForgetPassword"
+    },
+    {
+      "path": "pages/Front/UserCenter"
+    },
+    {
+      "path": "pages/Front/PasswordEdit"
+    },
+    {
+      "path": "pages/Front/UserInfoEdit"
+    },
+    {
+      "path": "pages/Front/WeChatBind"
+    },
+    {
+      "path": "pages/Front/AudioRecord"
+    },
+    {
+      "path": "pages/Front/AudioResult"
+    },
+    {
+      "path": "pages/Front/AudioRecordList"
+    },
+    {
+      "path": "pages/Front/AudioAIReport"
+    },
+    {
+      "path": "pages/Front/AudioAIChat"
+    },
+    {
+      "path": "pages/Front/AudioAISpectrumUpload"
+    },
+    {
+      "path": "pages/Front/AudioAIToolResult"
+    },
+    {
+      "path": "pages/Front/HealthRecord"
+    },
+    {
+      "path": "pages/Front/SymptomLogList"
+    },
+    {
+      "path": "pages/Front/SymptomLogForm"
+    },
+    {
+      "path": "pages/Front/SymptomLogDetail"
+    },
+    {
+      "path": "pages/Front/ReminderMessageList"
+    },
+    {
+      "path": "pages/Front/HealthReminder"
+    },
+    {
+      "path": "pages/Front/ScienceHome"
+    },
+    {
+      "path": "pages/Front/ScienceList"
+    },
+    {
+      "path": "pages/Front/ScienceDetail"
+    },
+    {
+      "path": "pages/Front/QuestionnaireHome"
+    },
+    {
+      "path": "pages/Front/QuestionnaireAnswer"
+    },
+    {
+      "path": "pages/Front/QuestionnaireResult"
+    },
+    {
+      "path": "pages/Front/QuestionnaireHistory"
+    },
+    {
+      "path": "pages/Front/SciencePublish"
+    },
+    {
+      "path": "pages/Front/MyScience"
+    },
+    {
+      "path": "pages/Front/MyCollections"
+    },
+    {
+      "path": "pages/Front/DietHome"
+    },
+    {
+      "path": "pages/Front/DietFoodList"
+    },
+    {
+      "path": "pages/Front/DietFoodDetail"
+    },
+    {
+      "path": "pages/Front/DietRecordList"
+    },
+    {
+      "path": "pages/Front/MedicalHome"
+    },
+    {
+      "path": "pages/Front/HospitalDoctorList"
+    },
+    {
+      "path": "pages/Front/HospitalDoctorDetail"
+    },
+    {
+      "path": "pages/Front/MedicalRecommendList"
+    },
+    {
+      "path": "pages/Front/MedicalRecommendDetail"
+    },
+    {
+      "path": "pages/Front/MedicalPrepareReport"
+    },
+    {
+      "path": "pages/Front/MedicalReportWebView"
+    },
+    {
+      "path": "pages/Front/MedicalExportRecordList"
+    },
+    {
+      "path": "pages/Front/ModelLabelForm"
+    },
+    {
+      "path": "pages/Front/ModelLabelList"
+    },
+    {
+      "path": "pages/Front/ModelLabelDetail"
+    },
+    {
+      "path": "pages/Front/PrivacySetting"
+    },
+    {
+      "path": "pages/Front/DataExportRequest"
+    },
+    {
+      "path": "pages/Front/DataDeleteRequest"
+    },
+    {
+      "path": "pages/Front/PrivacyProtocol"
+    },
+    {
+      "path": "pages/Front/DataRightsHistory"
+    },
+    {
+      "path": "pages/Front/AuthUsageDetail"
+    },
+    {
+      "path": "pages/Front/LaryngoscopePhotoList"
+    },
+    {
+      "path": "pages/Front/LaryngoscopePhotoEdit"
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8",
+    "navigationStyle": "custom"
+  },
+  "uniIdRouter": {}
+}

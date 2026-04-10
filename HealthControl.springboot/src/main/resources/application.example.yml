@@ -1,0 +1,54 @@
+server:
+  ip: http://localhost:7245
+  tomcat:
+    relaxed-query-chars: '|,{,},[,]'
+  port: 7245
+
+spring:
+  mail:
+    username: your-email@qq.com
+    password: your-mail-auth-code
+    host: smtp.qq.com
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+  servlet:
+    multipart:
+      max-request-size: 10000MB
+      max-file-size: 10024MB
+  datasource:
+    username: root
+    password: your-db-password
+    url: jdbc:mysql://localhost:3306/HealthControl?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+  jackson:
+    property-naming-strategy: UPPER_CAMEL_CASE
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+
+mybatis-plus:
+  mapper-locations: mapper/*.xml
+  global-config:
+    db-config:
+      table-prefix:
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+    map-underscore-to-camel-case: false
+  type-aliases-package: com.example.web.entity
+
+logging:
+  level:
+    root: INFO
+    com.example.web: DEBUG
+    org.springframework.web: INFO
+    org.mybatis: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+ai:
+  qwen:
+    api-key: ${AI_QWEN_API_KEY:}
+    base-url: https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions
+    vl-model: qwen-vl-plus
+    text-model: qwen-plus

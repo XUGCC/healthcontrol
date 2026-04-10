@@ -1,0 +1,36 @@
+// 喉部健康自查小程序 - 绿色主题配色方案
+// 参考登录界面颜色：#11998e (深绿色) 和 #38ef7d (亮绿色)
+
+$--colors: (
+  // 主色调 - 使用深绿色作为系统主色
+  'primary': (
+    'base': #11998e, // 深绿色，与登录界面一致
+  ),
+  // 成功色 - 使用亮绿色，表示健康、成功
+  'success': (
+    'base': #38ef7d, // 亮绿色，与登录界面一致
+  ),
+  // 警告色 - 使用柔和的橙色，保持医疗健康主题
+  'warning': (
+    'base': #ffa726, // 柔和的橙色，适合健康提醒
+  ),
+  // 危险色 - 使用柔和的红色，适合医疗场景
+  'danger': (
+    'base': #ef5350, // 柔和的红色，适合警告
+  ),
+  // 错误色 - 与危险色保持一致
+  'error': (
+    'base': #ef5350, // 与危险色一致
+  ),
+  // 信息色 - 使用中性的灰绿色
+  'info': (
+    'base': #26a69a, // 灰绿色，与主题协调
+  ),
+);
+
+/* 覆盖 Element Plus 主题变量 */
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+    $colors: $--colors
+);
+
+@use "element-plus/theme-chalk/src/index.scss" as *;

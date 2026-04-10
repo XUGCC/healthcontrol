@@ -1,0 +1,34 @@
+# IDE and OS files
+.vscode/
+**/.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Node / front-end dependencies and builds
+**/node_modules/
+HealthControl.elementui/dist/
+HealthControl.uniapp/unpackage/
+
+# Java / Spring Boot build outputs
+**/target/
+**/*.class
+*.log
+
+# Python cache
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+
+# Local runtime / toolchain
+corretto-17.0.8/
+
+# Private configuration
+HealthControl.springboot/src/main/resources/application.yml
+
+# Runtime data / personal data / local dumps
+HealthControl.springboot/external-resources/
+healthcontrol.sql
+voice/test_2_82/
+voice/test_2_82_mfcc/

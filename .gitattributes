@@ -1,0 +1,2 @@
+laryngoscope[[:space:]]prediction/*.pth filter=lfs diff=lfs merge=lfs -text
+laryngoscope[[:space:]]prediction/**/*.pth filter=lfs diff=lfs merge=lfs -text

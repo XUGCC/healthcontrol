@@ -42,22 +42,42 @@
           <view class="laryngoscope-group__head">
             <view>
               <text class="laryngoscope-group__title">{{ buildGroupTitle(group) }}</text>
-              <text class="laryngoscope-group__meta">检查时间：{{ group.checkTime ? formatTime(group.checkTime) : "未填写" }}</text>
             </view>
             <view class="laryngoscope-group__badge">{{ group.items.length }} 张</view>
           </view>
 
           <view class="laryngoscope-group__photos">
-            <view v-for="item in group.items" :key="item.Id" class="laryngoscope-card">
-              <view class="laryngoscope-card__thumb" @click="preview(item.LaryngoscopePhotoUrl)">
-                <image :src="item.LaryngoscopePhotoUrl" mode="aspectFill" class="laryngoscope-card__image" />
+            <view v-for="item in group.items" :key="item.Id" class="laryngoscope-card hc-interactive-card" @click="goDetail(item)">
+              <view class="laryngoscope-card__content">
+                <view class="laryngoscope-card__thumb" @click.stop="preview(item.LaryngoscopePhotoUrl)">
+                  <image :src="item.LaryngoscopePhotoUrl" mode="aspectFill" class="laryngoscope-card__image" />
+                </view>
+                <view class="laryngoscope-card__body">
+                  <text class="laryngoscope-card__time">
+                    {{ item.CheckTime ? `检查：${formatTime(item.CheckTime)}` : "检查时间未填写" }}
+                  </text>
+                  <text class="laryngoscope-card__time">{{ item.UploadTime ? `上传：${formatTime(item.UploadTime)}` : "上传时间未知" }}</text>
+                  <text v-if="buildBriefInfo(item)" class="laryngoscope-card__desc">{{ buildBriefInfo(item) }}</text>
+                  <view class="laryngoscope-card__analysis">
+                    <view class="laryngoscope-card__analysis-row">
+                      <text class="laryngoscope-card__analysis-label">本地预测</text>
+                      <text class="laryngoscope-card__analysis-value" :class="statusClass(item.LatestLocalPrediction?.Status)">
+                        {{ buildLocalPredictionText(item) }}
+                      </text>
+                    </view>
+                    <view class="laryngoscope-card__analysis-row">
+                      <text class="laryngoscope-card__analysis-label">Qwen分析</text>
+                      <text class="laryngoscope-card__analysis-value" :class="statusClass(item.LatestQwenAnalysis?.Status)">
+                        {{ buildQwenAnalysisText(item) }}
+                      </text>
+                    </view>
+                  </view>
+                </view>
               </view>
-              <text class="laryngoscope-card__title">{{ buildTitle(item) }}</text>
-              <text class="laryngoscope-card__time">{{ item.UploadTime ? `上传：${formatTime(item.UploadTime)}` : "上传时间未知" }}</text>
-              <text v-if="item.PhotoDesc" class="laryngoscope-card__desc">{{ item.PhotoDesc }}</text>
               <view class="laryngoscope-card__actions">
-                <view class="hc-pill-button-soft hc-interactive-pill" @click="edit(item)">编辑</view>
-                <view class="hc-pill-button hc-interactive-pill laryngoscope-card__delete" @click="remove(item)">删除</view>
+                <view class="hc-pill-button-dark hc-interactive-pill" @click.stop="goDetail(item)">查看详情</view>
+                <view class="hc-pill-button-soft hc-interactive-pill" @click.stop="edit(item)">编辑</view>
+                <view class="hc-pill-button hc-interactive-pill laryngoscope-card__delete" @click.stop="remove(item)">删除</view>
               </view>
             </view>
           </view>
@@ -105,15 +125,26 @@ const formatTime = (val) => {
   return String(val).replace("T", " ");
 };
 
+const extractDatePart = (val) => {
+  const normalized = formatTime(val);
+  return normalized ? normalized.split(" ")[0] : "";
+};
+
 const buildTitle = (item) => {
   if (item.PhotoDesc) return String(item.PhotoDesc).split("|")[0].trim();
   return "喉镜检查记录";
 };
 
+const buildBriefInfo = (item) => {
+  const parts = [item.HospitalName, item.CheckType].filter(Boolean);
+  if (parts.length) return parts.join(" | ");
+  return item.PhotoDesc || "";
+};
+
 const groupedItems = computed(() => {
   const map = {};
   for (const item of items.value || []) {
-    const datePart = item.CheckTime ? String(item.CheckTime).split("T")[0] : "";
+    const datePart = extractDatePart(item.CheckTime);
     const hospital = item.HospitalName || "";
     const key = `${datePart}|${hospital}` || `id_${item.Id}`;
     if (!map[key]) {
@@ -130,7 +161,7 @@ const groupedItems = computed(() => {
 });
 
 const buildGroupTitle = (group) => {
-  const datePart = group.checkTime ? String(group.checkTime).split("T")[0] : "";
+  const datePart = extractDatePart(group.checkTime);
   if (datePart && group.hospitalName) return `${datePart} ${group.hospitalName} 喉镜检查`;
   if (group.hospitalName) return `${group.hospitalName} 喉镜检查`;
   if (datePart) return `${datePart} 喉镜检查`;
@@ -143,6 +174,43 @@ const preview = (url) => {
     urls: [url],
     current: url,
   });
+};
+
+const goDetail = (item) => {
+  if (!item?.Id) return;
+  uni.navigateTo({
+    url: `/pages/Front/LaryngoscopePhotoDetail?id=${item.Id}`,
+  });
+};
+
+const formatPercent = (value) => {
+  const num = Number(value);
+  if (!Number.isFinite(num)) return "";
+  return `${Math.round(num * 100)}%`;
+};
+
+const buildLocalPredictionText = (item) => {
+  const result = item?.LatestLocalPrediction;
+  if (!result?.Status) return "未预测";
+  if (result.Status === "FAILED") return "预测失败";
+  if (result.Status === "PROCESSING") return "预测中";
+  const percent = formatPercent(result.Confidence);
+  return `${result.PredictedLabel || "已完成"}${percent ? ` ${percent}` : ""}`;
+};
+
+const buildQwenAnalysisText = (item) => {
+  const result = item?.LatestQwenAnalysis;
+  if (!result?.Status) return "未分析";
+  if (result.Status === "FAILED") return "分析失败";
+  if (result.Status === "PROCESSING") return "分析中";
+  return result.RiskLevel ? `${result.RiskLevel}风险` : "已完成";
+};
+
+const statusClass = (status) => {
+  if (status === "SUCCESS") return "is-success";
+  if (status === "FAILED") return "is-danger";
+  if (status === "PROCESSING") return "is-pending";
+  return "";
 };
 
 const fetchList = async (reset = false) => {
@@ -294,9 +362,13 @@ onReachBottom(() => {
 
 .laryngoscope-group__head {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 12upx;
+}
+
+.laryngoscope-group__head > view:first-child {
+  min-width: 0;
 }
 
 .laryngoscope-group__title {
@@ -304,13 +376,6 @@ onReachBottom(() => {
   font-size: 30upx;
   font-weight: 800;
   color: #172119;
-}
-
-.laryngoscope-group__meta {
-  display: block;
-  margin-top: 8upx;
-  font-size: 20upx;
-  color: #7c8e7b;
 }
 
 .laryngoscope-group__badge {
@@ -328,52 +393,121 @@ onReachBottom(() => {
 
 .laryngoscope-group__photos {
   margin-top: 18upx;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 14upx;
 }
 
 .laryngoscope-card {
-  padding: 14upx;
+  padding: 16upx;
   border-radius: 28upx;
   background: rgba(248, 252, 239, 0.84);
   border: 1upx solid rgba(205, 224, 145, 0.9);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 136upx;
+  gap: 14upx;
+  align-items: center;
+  min-height: 188upx;
+}
+
+.laryngoscope-card__content {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 156upx minmax(0, 1fr);
+  gap: 12upx;
+  align-items: center;
+}
+
+.laryngoscope-card__body {
+  min-width: 0;
+  min-height: 156upx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .laryngoscope-card__thumb {
-  width: 100%;
-  height: 220upx;
+  width: 156upx;
+  height: 156upx;
 }
 
 .laryngoscope-card__image {
   width: 100%;
   height: 100%;
-  border-radius: 22upx;
+  border-radius: 20upx;
   background: #dfe7d2;
-}
-
-.laryngoscope-card__title {
-  display: block;
-  margin-top: 12upx;
-  font-size: 22upx;
-  font-weight: 800;
-  color: #172119;
 }
 
 .laryngoscope-card__time,
 .laryngoscope-card__desc {
   display: block;
-  margin-top: 6upx;
   font-size: 20upx;
-  line-height: 1.6;
+  line-height: 1.5;
   color: #556556;
 }
 
-.laryngoscope-card__actions {
-  margin-top: 12upx;
+.laryngoscope-card__time + .laryngoscope-card__time,
+.laryngoscope-card__desc {
+  margin-top: 4upx;
+}
+
+.laryngoscope-card__analysis {
+  margin-top: 8upx;
+  padding: 10upx 12upx;
+  border-radius: 20upx;
+  background: rgba(241, 248, 223, 0.78);
+  border: 1upx solid rgba(205, 224, 145, 0.82);
   display: flex;
   flex-direction: column;
+  gap: 6upx;
+}
+
+.laryngoscope-card__analysis-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 10upx;
+}
+
+.laryngoscope-card__analysis-label {
+  font-size: 18upx;
+  color: #7c8e7b;
+  white-space: nowrap;
+}
+
+.laryngoscope-card__analysis-value {
+  min-width: 0;
+  text-align: right;
+  font-size: 18upx;
+  font-weight: 800;
+  color: #172119;
+  word-break: break-all;
+}
+
+.laryngoscope-card__analysis-value.is-success {
+  color: #5f8f2f;
+}
+
+.laryngoscope-card__analysis-value.is-danger {
+  color: #ba533d;
+}
+
+.laryngoscope-card__analysis-value.is-pending {
+  color: #996f20;
+}
+
+.laryngoscope-card__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8upx;
+  justify-content: center;
+  align-self: stretch;
+}
+
+.laryngoscope-card__actions > view {
+  min-height: 50upx;
+  padding: 0 8upx;
+  font-size: 20upx;
 }
 
 .laryngoscope-card__delete {

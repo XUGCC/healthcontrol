@@ -166,6 +166,9 @@
       "path": "pages/Front/LaryngoscopePhotoList"
     },
     {
+      "path": "pages/Front/LaryngoscopePhotoDetail"
+    },
+    {
       "path": "pages/Front/LaryngoscopePhotoEdit"
     }
   ],

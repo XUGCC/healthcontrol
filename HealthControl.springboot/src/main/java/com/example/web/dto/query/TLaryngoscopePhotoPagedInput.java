@@ -1,8 +1,10 @@
 package com.example.web.dto.query;
 
 import com.example.web.tools.dto.PagedInput;
+import com.example.web.tools.jackson.FlexibleLocalDateTimeDeserializer;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
@@ -38,12 +40,14 @@ public class TLaryngoscopePhotoPagedInput extends PagedInput {
      */
     @JsonProperty("UpdateTimeRange")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonDeserialize(contentUsing = FlexibleLocalDateTimeDeserializer.class)
     private List<LocalDateTime> UpdateTimeRange;
     /**
      * 照片上传时间时间范围
      */
     @JsonProperty("UploadTimeRange")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonDeserialize(contentUsing = FlexibleLocalDateTimeDeserializer.class)
     private List<LocalDateTime> UploadTimeRange;
      /**
      * 审核状态

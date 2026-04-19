@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.web.SysConst;
 import com.example.web.dto.*;
+import com.example.web.dto.front.LaryngoscopeAnalysisDtos.LocalPredictionOutput;
+import com.example.web.dto.front.LaryngoscopeAnalysisDtos.QwenAnalysisOutput;
 import com.example.web.dto.query.*;
 import com.example.web.entity.*;
 import com.example.web.mapper.*;
@@ -51,6 +53,12 @@ public class TLaryngoscopePhotoServiceImpl extends ServiceImpl<TLaryngoscopePhot
     private TLaryngoscopePhotoMapper TLaryngoscopePhotoMapper;
     @Autowired
     private TAudioScreenRecordMapper  TAudioScreenRecordMapper;                        
+    @Autowired
+    private TLaryngoscopeLocalPredictionRecordMapper laryngoscopeLocalPredictionRecordMapper;
+    @Autowired
+    private TLaryngoscopeQwenAnalysisRecordMapper laryngoscopeQwenAnalysisRecordMapper;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
   
    /**
@@ -105,10 +113,81 @@ public class TLaryngoscopePhotoServiceImpl extends ServiceImpl<TLaryngoscopePhot
            //查询出关联的TAudioScreenRecord表信息           
             TAudioScreenRecord  DetectEntity= TAudioScreenRecordMapper.selectById(item.getDetectId());
             item.setDetectDto(DetectEntity!=null?DetectEntity.MapToDto():new TAudioScreenRecordDto());              
+
+            item.setLatestLocalPrediction(mapLatestLocalPrediction(item));
+            item.setLatestQwenAnalysis(mapLatestQwenAnalysis(item));
        }
        
      return items; 
    }
+
+    private LocalPredictionOutput mapLatestLocalPrediction(TLaryngoscopePhotoDto item) {
+        if (item == null || item.getId() == null) return null;
+        TLaryngoscopeLocalPredictionRecord entity = laryngoscopeLocalPredictionRecordMapper.selectOne(
+                Wrappers.<TLaryngoscopeLocalPredictionRecord>lambdaQuery()
+                        .eq(TLaryngoscopeLocalPredictionRecord::getLaryngoscopePhotoId, item.getId())
+                        .eq(item.getUserId() != null, TLaryngoscopeLocalPredictionRecord::getUserId, item.getUserId())
+                        .and(w -> w.isNull(TLaryngoscopeLocalPredictionRecord::getIsDelete)
+                                .or().eq(TLaryngoscopeLocalPredictionRecord::getIsDelete, false))
+                        .orderByDesc(TLaryngoscopeLocalPredictionRecord::getCreationTime)
+                        .last("LIMIT 1")
+        );
+        if (entity == null) return null;
+        LocalPredictionOutput out = new LocalPredictionOutput();
+        out.setPredictionId(entity.getId());
+        out.setLaryngoscopePhotoId(entity.getLaryngoscopePhotoId());
+        out.setStatus(entity.getPredictionStatus());
+        out.setPredictedClassId(entity.getPredictedClassId());
+        out.setPredictedLabel(entity.getPredictedLabel());
+        out.setConfidence(entity.getConfidence());
+        out.setProbabilitiesJson(entity.getProbabilitiesJson());
+        out.setProbabilities(parseDoubleList(entity.getProbabilitiesJson()));
+        out.setHeatmapUrl(entity.getHeatmapUrl());
+        out.setModelName(entity.getModelName());
+        out.setModelVersion(entity.getModelVersion());
+        out.setCreatedTime(entity.getCreationTime() == null ? null : entity.getCreationTime().toString());
+        out.setErrorCode(entity.getErrorCode());
+        out.setErrorMessage(entity.getErrorMessage());
+        return out;
+    }
+
+    private QwenAnalysisOutput mapLatestQwenAnalysis(TLaryngoscopePhotoDto item) {
+        if (item == null || item.getId() == null) return null;
+        TLaryngoscopeQwenAnalysisRecord entity = laryngoscopeQwenAnalysisRecordMapper.selectOne(
+                Wrappers.<TLaryngoscopeQwenAnalysisRecord>lambdaQuery()
+                        .eq(TLaryngoscopeQwenAnalysisRecord::getLaryngoscopePhotoId, item.getId())
+                        .eq(item.getUserId() != null, TLaryngoscopeQwenAnalysisRecord::getUserId, item.getUserId())
+                        .and(w -> w.isNull(TLaryngoscopeQwenAnalysisRecord::getIsDelete)
+                                .or().eq(TLaryngoscopeQwenAnalysisRecord::getIsDelete, false))
+                        .orderByDesc(TLaryngoscopeQwenAnalysisRecord::getCreationTime)
+                        .last("LIMIT 1")
+        );
+        if (entity == null) return null;
+        QwenAnalysisOutput out = new QwenAnalysisOutput();
+        out.setAnalysisId(entity.getId());
+        out.setLaryngoscopePhotoId(entity.getLaryngoscopePhotoId());
+        out.setStatus(entity.getAnalysisStatus());
+        out.setRiskLevel(entity.getRiskLevel());
+        out.setSummaryText(entity.getSummaryText());
+        out.setReportJson(entity.getReportJson());
+        out.setModelName(entity.getModelName());
+        out.setPromptVersion(entity.getPromptVersion());
+        out.setIncludeLocalPredictionContext(entity.getIncludeLocalPredictionContext());
+        out.setLocalPredictionRecordId(entity.getLocalPredictionRecordId());
+        out.setCreatedTime(entity.getCreationTime() == null ? null : entity.getCreationTime().toString());
+        out.setErrorCode(entity.getErrorCode());
+        out.setErrorMessage(entity.getErrorMessage());
+        return out;
+    }
+
+    private List<Double> parseDoubleList(String json) {
+        if (!Extension.isNotNullOrEmpty(json)) return new ArrayList<>();
+        try {
+            return objectMapper.readValue(json, new com.fasterxml.jackson.core.type.TypeReference<List<Double>>() {});
+        } catch (Exception ex) {
+            return new ArrayList<>();
+        }
+    }
   
     /**
      * 喉镜照片记录分页查询

@@ -53,8 +53,16 @@ public class QwenBailianClient {
      * 多模态：文本 + PNG base64（不含 data: 前缀）
      */
     public QwenResponse chatWithPngBase64(String prompt, String pngBase64) throws Exception {
+        return chatWithImageBase64(prompt, pngBase64, "image/png");
+    }
+
+    /**
+     * 多模态：文本 + 图片 base64（不含 data: 前缀）
+     */
+    public QwenResponse chatWithImageBase64(String prompt, String imageBase64, String mimeType) throws Exception {
         ensureKey();
-        String dataUrl = "data:image/png;base64," + pngBase64;
+        String safeMimeType = mimeType == null || !mimeType.startsWith("image/") ? "image/png" : mimeType;
+        String dataUrl = "data:" + safeMimeType + ";base64," + imageBase64;
 
         Map<String, Object> message = new LinkedHashMap<>();
         message.put("role", "user");

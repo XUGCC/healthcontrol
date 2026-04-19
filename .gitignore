@@ -32,3 +32,8 @@ HealthControl.springboot/external-resources/
 healthcontrol.sql
 voice/test_2_82/
 voice/test_2_82_mfcc/
+
+# Laryngoscope local prediction artifacts
+laryngoscope prediction/**/*.pth
+laryngoscope prediction/outputs/
+laryngoscope prediction/store/

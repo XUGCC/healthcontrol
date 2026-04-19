@@ -110,6 +110,20 @@ const buildPhotoDesc = () => {
   return parts.join(" | ");
 };
 
+const normalizePickerDateTime = (value) => {
+  if (!value) return "";
+  return String(value).trim().replace("T", " ");
+};
+
+const normalizeApiDateTime = (value) => {
+  if (!value) return null;
+  let normalized = normalizePickerDateTime(value);
+  if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(normalized)) {
+    normalized += ":00";
+  }
+  return normalized;
+};
+
 const submit = async () => {
   if (!form.value.LaryngoscopePhotoUrl) {
     uni.showToast({ title: "请先上传喉镜照片", icon: "none" });
@@ -118,21 +132,13 @@ const submit = async () => {
 
   submitting.value = true;
   try {
-    if (checkTime.value) {
-      let value = String(checkTime.value);
-      if (value.length === 16) {
-        value += ":00";
-      }
-      checkTime.value = value;
-    }
-
     form.value.PhotoDesc = buildPhotoDesc();
     const { Success, Msg } = await Post("/Front/Laryngoscope/SavePhoto", {
       Id: form.value.Id,
       DetectId: form.value.DetectId,
       LaryngoscopePhotoUrl: form.value.LaryngoscopePhotoUrl,
       PhotoDesc: form.value.PhotoDesc,
-      CheckTime: checkTime.value || null,
+      CheckTime: normalizeApiDateTime(checkTime.value),
       HospitalName: hospital.value || "",
       CheckType: checkType.value || "",
     });
@@ -161,7 +167,7 @@ const loadDetail = async (id) => {
   form.value.Id = Data.Id || null;
   form.value.DetectId = Data.DetectId || null;
   form.value.LaryngoscopePhotoUrl = Data.LaryngoscopePhotoUrl || "";
-  checkTime.value = Data.CheckTime || "";
+  checkTime.value = normalizePickerDateTime(Data.CheckTime);
   hospital.value = Data.HospitalName || "";
   checkType.value = Data.CheckType || "";
 

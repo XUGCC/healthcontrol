@@ -9,6 +9,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.example.web.tools.jackson.FlexibleLocalDateTimeDeserializer;
+import com.example.web.tools.jackson.StandardLocalDateTimeSerializer;
+import com.example.web.dto.front.LaryngoscopeAnalysisDtos.LocalPredictionOutput;
+import com.example.web.dto.front.LaryngoscopeAnalysisDtos.QwenAnalysisOutput;
 import com.example.web.entity.*;
 import org.apache.commons.beanutils.BeanUtils;
 import java.lang.reflect.InvocationTargetException;
@@ -30,6 +34,8 @@ public class TLaryngoscopePhotoDto extends BaseDto
      * 审核更新时间
      */ 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonSerialize(using = StandardLocalDateTimeSerializer.class)
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     @JsonProperty("UpdateTime")
     private LocalDateTime UpdateTime;             
     
@@ -66,6 +72,8 @@ public class TLaryngoscopePhotoDto extends BaseDto
      * 照片上传时间
      */ 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonSerialize(using = StandardLocalDateTimeSerializer.class)
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     @JsonProperty("UploadTime")
     private LocalDateTime UploadTime;             
     
@@ -73,6 +81,8 @@ public class TLaryngoscopePhotoDto extends BaseDto
      * 实际检查时间（区别于上传时间）
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonSerialize(using = StandardLocalDateTimeSerializer.class)
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     @JsonProperty("CheckTime")
     private LocalDateTime CheckTime;
 
@@ -119,6 +129,12 @@ public class TLaryngoscopePhotoDto extends BaseDto
    
      @JsonProperty("DetectDto") 
     private TAudioScreenRecordDto DetectDto;                        
+
+    @JsonProperty("LatestLocalPrediction")
+    private LocalPredictionOutput LatestLocalPrediction;
+
+    @JsonProperty("LatestQwenAnalysis")
+    private QwenAnalysisOutput LatestQwenAnalysis;
    
  	 /**
      * 把喉镜照片记录传输模型转换成喉镜照片记录实体

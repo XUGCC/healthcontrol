@@ -16,41 +16,7 @@
         </text>
       </view>
 
-      <view class="ai-chat-grid">
-        <view class="hc-card-dark ai-chat-summary hc-reveal-up hc-shine" style="--delay: 100ms">
-          <view class="hc-kicker hc-kicker--dark">会话摘要</view>
-          <text class="ai-chat-summary__title">已保留最近 {{ messageCount }} 条消息</text>
-          <text class="ai-chat-summary__desc">
-            {{ storageReady ? "当前账号已启用本地历史记录，返回后仍可继续追问。" : "登录后会自动绑定到你的本地会话历史。" }}
-          </text>
-          <view class="ai-chat-summary__meta">
-            <view class="ai-chat-summary__metric">
-              <text class="ai-chat-summary__metric-label">AI 回复</text>
-              <text class="ai-chat-summary__metric-value">{{ assistantCount }}</text>
-            </view>
-            <view class="ai-chat-summary__metric">
-              <text class="ai-chat-summary__metric-label">当前状态</text>
-              <text class="ai-chat-summary__metric-value">{{ sending ? "思考中" : "可继续提问" }}</text>
-            </view>
-          </view>
-        </view>
-
-        <view class="hc-card-soft ai-chat-note hc-reveal-up" style="--delay: 160ms">
-          <view class="hc-section-head">
-            <text class="hc-section-head__title">参考边界</text>
-            <text class="hc-section-head__meta">先咨询，再判断下一步</text>
-          </view>
-          <text class="ai-chat-note__text">
-            AI 答复仅供健康参考，不构成医疗诊断或个性化医疗建议，不能替代医生就诊。
-          </text>
-          <view class="ai-chat-note__latest">
-            <text class="ai-chat-note__latest-label">最近一条回复</text>
-            <text class="ai-chat-note__latest-text">{{ latestAssistantPreview }}</text>
-          </view>
-        </view>
-      </view>
-
-      <view class="hc-card-soft ai-tool-card hc-reveal-up" style="--delay: 220ms">
+      <view class="hc-card-soft ai-tool-card hc-reveal-up" style="--delay: 100ms">
         <view class="hc-section-head">
           <text class="hc-section-head__title">快捷工具</text>
           <text class="hc-section-head__meta">在对话外先完成一次结构化解读</text>
@@ -69,7 +35,7 @@
         </view>
       </view>
 
-      <view class="hc-card-soft conversation-card hc-reveal-up" style="--delay: 280ms">
+      <view class="hc-card-soft conversation-card hc-reveal-up" style="--delay: 160ms">
         <view class="bg-section-head">
           <text class="bg-section-head__title">会话内容</text>
           <text class="bg-section-head__meta">{{ messageCount }} 条消息</text>
@@ -161,18 +127,7 @@ const storageKey = computed(() => {
   const uid = commonStore?.UserId || "";
   return uid ? `ai_chat_history_${uid}` : "";
 });
-const storageReady = computed(() => !!storageKey.value);
 const messageCount = computed(() => messages.value.filter((item) => !item?._thinking).length);
-const assistantCount = computed(() =>
-  messages.value.filter((item) => item.role === "assistant" && !item?._thinking).length
-);
-const latestAssistantPreview = computed(() => {
-  const latest = [...messages.value]
-    .reverse()
-    .find((item) => item.role === "assistant" && !item?._thinking && item.content);
-  if (!latest) return "继续发送问题，AI 会根据上下文给出下一步建议。";
-  return latest.content.length > 44 ? `${latest.content.slice(0, 44)}...` : latest.content;
-});
 const isPopupOpen = computed(() => activePopupCount.value > 0);
 const showActionSheet = (options) =>
   actionSheetRef.value?.open(options) || Promise.resolve({ confirm: false, cancel: true, tapIndex: -1, action: null });
@@ -382,94 +337,6 @@ onShow(async () => {
 
 .ai-chat-head {
   gap: 10upx;
-}
-
-.ai-chat-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18upx;
-}
-
-.ai-chat-summary,
-.ai-chat-note {
-  min-height: 260upx;
-  display: flex;
-  flex-direction: column;
-}
-
-.ai-chat-summary__title {
-  display: block;
-  margin-top: 18upx;
-  font-size: 34upx;
-  line-height: 1.25;
-  font-weight: 800;
-  color: #f6ffdf;
-}
-
-.ai-chat-summary__desc {
-  display: block;
-  margin-top: 10upx;
-  font-size: 22upx;
-  line-height: 1.6;
-  color: rgba(241, 248, 223, 0.72);
-}
-
-.ai-chat-summary__meta {
-  margin-top: auto;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12upx;
-}
-
-.ai-chat-summary__metric {
-  padding: 16upx 18upx;
-  border-radius: 24upx;
-  background: rgba(241, 248, 223, 0.08);
-  border: 1upx solid rgba(202, 235, 134, 0.14);
-}
-
-.ai-chat-summary__metric-label {
-  display: block;
-  font-size: 20upx;
-  color: rgba(241, 248, 223, 0.72);
-}
-
-.ai-chat-summary__metric-value {
-  display: block;
-  margin-top: 8upx;
-  font-size: 26upx;
-  font-weight: 800;
-  color: #f7ffdf;
-}
-
-.ai-chat-note__text {
-  display: block;
-  margin-top: 18upx;
-  font-size: 22upx;
-  line-height: 1.65;
-  color: #556556;
-}
-
-.ai-chat-note__latest {
-  margin-top: auto;
-  padding: 18upx 20upx;
-  border-radius: 28upx;
-  background: rgba(248, 252, 239, 0.8);
-  border: 1upx solid rgba(201, 220, 145, 0.8);
-}
-
-.ai-chat-note__latest-label {
-  display: block;
-  font-size: 20upx;
-  color: #859585;
-}
-
-.ai-chat-note__latest-text {
-  display: block;
-  margin-top: 8upx;
-  font-size: 22upx;
-  line-height: 1.55;
-  color: #243123;
 }
 
 .ai-tool-actions {

@@ -2,8 +2,13 @@ package com.example.web.controller;
 
 import com.example.web.tools.dto.IdInput;
 import com.example.web.dto.TLaryngoscopePhotoDto;
+import com.example.web.dto.front.LaryngoscopeAnalysisDtos.LocalPredictInput;
+import com.example.web.dto.front.LaryngoscopeAnalysisDtos.LocalPredictionOutput;
+import com.example.web.dto.front.LaryngoscopeAnalysisDtos.QwenAnalysisOutput;
+import com.example.web.dto.front.LaryngoscopeAnalysisDtos.QwenAnalyzeInput;
 import com.example.web.dto.query.TLaryngoscopePhotoPagedInput;
 import com.example.web.service.TLaryngoscopePhotoService;
+import com.example.web.service.front.FrontLaryngoscopeAnalysisService;
 import com.example.web.tools.BaseContext;
 import com.example.web.tools.dto.PagedResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +26,9 @@ public class FrontLaryngoscopeController {
 
     @Autowired
     private TLaryngoscopePhotoService laryngoscopePhotoService;
+
+    @Autowired
+    private FrontLaryngoscopeAnalysisService laryngoscopeAnalysisService;
 
     /**
      * 当前登录用户的喉镜照片列表（分页）
@@ -64,6 +72,26 @@ public class FrontLaryngoscopeController {
     @RequestMapping(value = "/Delete", method = RequestMethod.POST)
     public void Delete(@RequestBody IdInput input) {
         laryngoscopePhotoService.Delete(input);
+    }
+
+    @RequestMapping(value = "/LocalPredict", method = RequestMethod.POST)
+    public LocalPredictionOutput LocalPredict(@RequestBody LocalPredictInput input) {
+        return laryngoscopeAnalysisService.localPredict(input);
+    }
+
+    @RequestMapping(value = "/GetLocalPrediction", method = RequestMethod.POST)
+    public LocalPredictionOutput GetLocalPrediction(@RequestBody IdInput input) {
+        return laryngoscopeAnalysisService.getLocalPrediction(input);
+    }
+
+    @RequestMapping(value = "/QwenAnalyze", method = RequestMethod.POST)
+    public QwenAnalysisOutput QwenAnalyze(@RequestBody QwenAnalyzeInput input) {
+        return laryngoscopeAnalysisService.qwenAnalyze(input);
+    }
+
+    @RequestMapping(value = "/GetQwenAnalysis", method = RequestMethod.POST)
+    public QwenAnalysisOutput GetQwenAnalysis(@RequestBody IdInput input) {
+        return laryngoscopeAnalysisService.getQwenAnalysis(input);
     }
 }
 
